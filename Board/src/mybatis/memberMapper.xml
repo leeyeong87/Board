@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board"><!-- 네임스페이스 지정, 파라미터맵 사용X -->
+<!-- 맵퍼 순서에 마춰서 코딩 -->
+<sql id="mem">
+ from member 
+</sql>
+<!-- insert -->
+
+	<insert id="addBoard" parameterType="Board.vo.BoardsVo">
+	insert into board(num, writer, email, subject, passwd, reg_date, ref, re_step, re_level, content, ip) 
+	values(board_num.NEXTVAL,#{writer},#{email},#{subject},#{passwd},#{reg_date},#{ref},#{re_step},#{re_level},#{content},#{ip})
+	</insert>
+	
+<!-- update -->
+
+	<update id="upBoard" parameterType="Board.vo.BoardsVo">
+		update board set re_step=re_step+1 where ref=#{ref} and re_step>#{re_step}
+	</update>
+	
+	<update id="upLine" parameterType="Board.vo.BoardsVo">
+		update board set readcount=readcount+1 where num = #{num}
+	</update>
+	
+	<update id="Modifyboard" parameterType="Board.vo.BoardsVo">
+		update board set writer=#{writer},email=#{email},subject=#{subject},passwd=#{passwd},content=#{content} where num=#{num}
+	</update>
+	
+<!-- delete -->
+
+	<delete id="delBoard" parameterType="Board.vo.BoardsVo">
+		delete from board where num=#{num}
+	</delete>
+	
+<!-- select -->
+
+	<select id="getNum" resultType="Board.vo.BoardsVo">
+		select max(num) from board
+	</select>
+	
+	<select id="getCount" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<select id="getPage" parameterType="java.util.Map" resultType="Board.vo.BoardsVo">
+	<![CDATA[
+		select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,r 
+        from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,rownum r 
+        from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount 
+        from board order by ref desc, re_step asc) order by ref desc, re_step asc ) where r >= #{start} and r  <= #{end} ")
+        ]]>
+	</select>
+	
+	<select id="getBoard" resultType="Board.vo.BoardsVo">
+		select * from board where num = #{num}
+	</select>
+	
+	<select id="getNumPwd" resultType="Board.vo.BoardsVo">
+		select passwd from board where num = #{num}
+	</select>
+
+</mapper>

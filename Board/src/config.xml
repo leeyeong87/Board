@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="db.properties" /><!-- 프로퍼티스 지정 -->
+	<environments default="development">
+		<environment id="development">
+		<!-- 트랜잭션 설정 -->
+			<transactionManager type="JDBC" />
+			<!-- dataSource를 가지고 커넥션 풀 생성 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="mybatis/memberMapper.xml" /><!-- 맵퍼파일 지정 -->
+		<!-- 맵퍼파일이 추가되면 이부분에 추가 -->
+	</mappers>
+</configuration>
